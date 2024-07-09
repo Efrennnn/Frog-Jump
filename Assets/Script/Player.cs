@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public float speed = 1f;
     public float jumpForce = 3f;
+    public Animator animator;
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
@@ -13,7 +14,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        // Get Rigidbody2D and SpriteRenderer components
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -33,12 +33,13 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Move player left or right
+
         float horizontalInput = Input.GetAxis("Horizontal");
+        animator.SetFloat("speed", Mathf.Abs(horizontalInput));
+
         transform.Translate(new Vector3(horizontalInput * speed * Time.deltaTime, 0f, 0f));
         SpriteFlip(horizontalInput);
 
-        // Make the player jump if they are grounded and the space key is pressed
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
@@ -47,7 +48,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Check if player collides with ground
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
@@ -56,7 +57,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // Check if player leaves the ground
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
